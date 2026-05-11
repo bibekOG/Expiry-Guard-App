@@ -1,15 +1,149 @@
 'use client'
 
 import { login, signup } from './actions'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Shield, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
+const CURRENCIES = [
+  { code: 'USD', name: 'US Dollar', symbol: '$' },
+  { code: 'EUR', name: 'Euro', symbol: '€' },
+  { code: 'GBP', name: 'British Pound', symbol: '£' },
+  { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
+  { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
+  { code: 'AUD', name: 'Australian Dollar', symbol: '$' },
+  { code: 'CAD', name: 'Canadian Dollar', symbol: '$' },
+  { code: 'CHF', name: 'Swiss Franc', symbol: 'Fr' },
+  { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
+  { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
+  { code: 'MXN', name: 'Mexican Peso', symbol: '$' },
+  { code: 'SGD', name: 'Singapore Dollar', symbol: '$' },
+  { code: 'HKD', name: 'Hong Kong Dollar', symbol: '$' },
+  { code: 'NOK', name: 'Norwegian Krone', symbol: 'kr' },
+  { code: 'KRW', name: 'South Korean Won', symbol: '₩' },
+  { code: 'TRY', name: 'Turkish Lira', symbol: '₺' },
+  { code: 'RUB', name: 'Russian Ruble', symbol: '₽' },
+  { code: 'ZAR', name: 'South African Rand', symbol: 'R' },
+  { code: 'NZD', name: 'New Zealand Dollar', symbol: '$' },
+  { code: 'THB', name: 'Thai Baht', symbol: '฿' },
+  { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ' },
+  { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼' },
+  { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM' },
+  { code: 'PHP', name: 'Philippine Peso', symbol: '₱' },
+  { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp' },
+  { code: 'PLN', name: 'Polish Zloty', symbol: 'zł' },
+  { code: 'CZK', name: 'Czech Koruna', symbol: 'Kč' },
+  { code: 'DKK', name: 'Danish Krone', symbol: 'kr' },
+  { code: 'HUF', name: 'Hungarian Forint', symbol: 'Ft' },
+  { code: 'ILS', name: 'Israeli Shekel', symbol: '₪' },
+  { code: 'CLP', name: 'Chilean Peso', symbol: '$' },
+  { code: 'COP', name: 'Colombian Peso', symbol: '$' },
+  { code: 'NPR', name: 'Nepalese Rupee', symbol: '₨' },
+  { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨' },
+  { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳' },
+  { code: 'VND', name: 'Vietnamese Dong', symbol: '₫' },
+  { code: 'EGP', name: 'Egyptian Pound', symbol: 'E£' },
+  { code: 'NGN', name: 'Nigerian Naira', symbol: '₦' },
+  { code: 'KES', name: 'Kenyan Shilling', symbol: 'Ksh' },
+  { code: 'GHS', name: 'Ghanaian Cedi', symbol: 'GH₵' },
+]
+
+function CurrencySelector({ value, onChange }: { value: string, onChange: (val: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const filtered = CURRENCIES.filter(c => 
+    c.code.toLowerCase().includes(search.toLowerCase()) || 
+    c.name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const selected = CURRENCIES.find(c => c.code === value) || CURRENCIES[0]
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all flex items-center justify-between"
+      >
+        <span className="truncate">{selected.code} ({selected.symbol}) - {selected.name}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
+          <ArrowRight className="w-4 h-4 rotate-90" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 5, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="absolute z-50 w-full bg-background border border-[var(--glass-border)] rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
+          >
+            <div className="p-2 border-b border-[var(--glass-border)] bg-[var(--glass-bg)]">
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search currency..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--glass-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              />
+            </div>
+            <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+              {filtered.map(c => (
+                <button
+                  key={c.code}
+                  type="button"
+                  onClick={() => {
+                    onChange(c.code)
+                    setIsOpen(false)
+                    setSearch('')
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all ${
+                    value === c.code 
+                      ? 'bg-emerald-500/20 text-emerald-500 font-bold' 
+                      : 'text-[var(--text-muted)] hover:bg-[var(--glass-bg)] hover:text-foreground'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 font-mono text-xs opacity-50">{c.code}</span>
+                    <span>{c.name}</span>
+                  </div>
+                  <span className="text-[var(--text-faint)]">{c.symbol}</span>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <div className="p-4 text-center text-xs text-[var(--text-faint)]">
+                  No currency found
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <input type="hidden" name="currency" value={value} />
+    </div>
+  )
+}
+
 function LoginForm() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [currency, setCurrency] = useState('USD')
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
   const message = searchParams.get('message')
@@ -123,10 +257,61 @@ function LoginForm() {
                   required
                   minLength={6}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-foreground placeholdertext-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all"
+                  className="w-full pl-11 pr-4 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-foreground placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all"
                 />
               </div>
             </div>
+
+            {isSignUp && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="space-y-4 pt-2"
+              >
+                <div className="space-y-1.5">
+                  <label htmlFor="location" className="text-xs font-medium text-[var(--text-faint)] uppercase tracking-wider">
+                    Your Location (Country/City)
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="location"
+                      name="location"
+                      type="text"
+                      required={isSignUp}
+                      placeholder="e.g. New York, USA"
+                      className="w-full px-4 py-3 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl text-foreground placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/40 transition-all pr-20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (navigator.geolocation) {
+                          const input = document.getElementById('location') as HTMLInputElement;
+                          input.placeholder = "Detecting...";
+                          navigator.geolocation.getCurrentPosition(async (pos) => {
+                            try {
+                              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+                              const data = await res.json();
+                              if (input) input.value = data.address.country || data.address.state || "Detected Location";
+                            } catch {
+                              if (input) input.value = "Location error";
+                            }
+                          });
+                        }
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px] font-bold hover:bg-emerald-500/20 transition-all"
+                    >
+                      Detect
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="currency" className="text-xs font-medium text-[var(--text-faint)] uppercase tracking-wider">
+                    Preferred Currency
+                  </label>
+                  <CurrencySelector value={currency} onChange={setCurrency} />
+                </div>
+              </motion.div>
+            )}
 
             <motion.button
               whileHover={{ scale: 1.01 }}

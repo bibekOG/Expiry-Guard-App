@@ -30,7 +30,18 @@ export async function signup(formData: FormData) {
     password: formData.get('password') as string,
   }
 
-  const { data: signUpData, error } = await supabase.auth.signUp(data)
+  const location = formData.get('location') as string
+  const currency = formData.get('currency') as string
+
+  const { data: signUpData, error } = await supabase.auth.signUp({
+    ...data,
+    options: {
+      data: {
+        location: location || 'Global',
+        currency: currency || 'USD',
+      }
+    }
+  })
 
   if (error) {
     redirect('/login?error=' + encodeURIComponent(error.message))
