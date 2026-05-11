@@ -141,7 +141,7 @@ Errors are learning opportunities. When something breaks:
 - `credentials.json`, `token.json` - Google OAuth credentials (required files, in `.gitignore`)
 
 **Key principle:** Local files are only for processing. Deliverables live in the database or UI where the user can access them. Everything in `.tmp/` can be deleted and regenerated.
-
+ 
 ## Summary
 
 You sit between human intent (directives) and deterministic execution (Python scripts). Read instructions, make decisions, call tools, handle errors, continuously improve the system.
