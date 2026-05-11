@@ -9,12 +9,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface AppLayoutProps {
   children: React.ReactNode
   userEmail?: string
+  userLocation?: string
+  userCurrency?: string
 }
 
-export default function AppLayout({ children, userEmail }: AppLayoutProps) {
+export default function AppLayout({ children, userEmail, userLocation, userCurrency }: AppLayoutProps) {
   return (
     <div className="flex min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Sidebar userEmail={userEmail} />
+      <Sidebar userEmail={userEmail} userLocation={userLocation} userCurrency={userCurrency} />
       
       <main className="flex-1 min-w-0 relative z-10 sm:pl-64 pb-20 sm:pb-0">
         <AnimatePresence mode="wait">

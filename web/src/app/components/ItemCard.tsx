@@ -5,6 +5,7 @@ import { Clock, Trash2, CheckCircle, AlertTriangle, UtensilsCrossed, MoreHorizon
 import { useState, useTransition } from 'react'
 import { updateItemStatus, deleteItem } from '@/app/actions'
 import type { Item } from '@/lib/types'
+import { getCurrencySymbol } from '@/lib/constants'
 
 const statusConfig = {
   active: {
@@ -71,9 +72,10 @@ function getExpiryProgress(addedAt: string, expiresAt: string | null): number {
 interface ItemCardProps {
   item: Item
   index?: number
+  currency?: string
 }
 
-export default function ItemCard({ item, index = 0 }: ItemCardProps) {
+export default function ItemCard({ item, index = 0, currency = 'USD' }: ItemCardProps) {
   const [showActions, setShowActions] = useState(false)
   const [isPending, startTransition] = useTransition()
   const status = statusConfig[item.status]
@@ -134,7 +136,7 @@ export default function ItemCard({ item, index = 0 }: ItemCardProps) {
               <>
                 <span className="text-xs text-[var(--text-faint)]">•</span>
                 <span className="text-xs text-emerald-500/60">
-                  ${item.financial_value}
+                  {getCurrencySymbol(currency)}{item.financial_value}
                 </span>
               </>
             )}

@@ -23,6 +23,8 @@ import type { Item } from '@/lib/types'
 interface InventoryClientProps {
   userEmail: string
   items: Item[]
+  currency?: string
+  location?: string
 }
 
 const CATEGORY_ICONS: Record<string, any> = {
@@ -41,6 +43,8 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function InventoryClient({
   userEmail,
   items,
+  currency = 'USD',
+  location = '',
 }: InventoryClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -83,7 +87,7 @@ export default function InventoryClient({
   const categories = ['all', ...Array.from(new Set(items.map(i => i.category).filter(Boolean)))]
 
   return (
-    <AppLayout userEmail={userEmail}>
+    <AppLayout userEmail={userEmail} userLocation={location} userCurrency={currency}>
       <div className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex flex-col gap-6 mb-8">
@@ -192,7 +196,7 @@ export default function InventoryClient({
                           key={item.id} 
                           item={item} 
                           index={index} 
-                          // Could add viewMode prop to ItemCard if needed for grid layout
+                          currency={currency}
                         />
                       ))}
                     </AnimatePresence>

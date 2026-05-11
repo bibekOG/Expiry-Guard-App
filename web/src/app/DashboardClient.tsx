@@ -29,14 +29,20 @@ import SmartInsightsPanel from './components/SmartInsightsPanel'
 import { useRealtimeSync } from '@/lib/useRealtimeSync'
 import type { Item } from '@/lib/types'
 
+import { getCurrencySymbol } from '@/lib/constants'
+
 interface DashboardClientProps {
   userEmail: string
   items: Item[]
+  currency?: string
+  location?: string
 }
 
 export default function DashboardClient({
   userEmail,
   items,
+  currency = 'USD',
+  location = '',
 }: DashboardClientProps) {
   const router = useRouter()
   const [hasMounted, setHasMounted] = useState(false)
@@ -64,7 +70,7 @@ export default function DashboardClient({
   const historyItems = items.filter((i) => i.status === 'consumed' || i.status === 'discarded').slice(0, 5)
 
   return (
-    <AppLayout userEmail={userEmail}>
+    <AppLayout userEmail={userEmail} userLocation={location} userCurrency={currency}>
       <div className="grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
         {/* 🧠 Smart AI Insights — Proactive Alerts */}
         {hasMounted && <SmartInsightsPanel />}
@@ -126,7 +132,7 @@ export default function DashboardClient({
               />
               <StatsCard
                 title="Money Saved"
-                value={`$${moneySaved.toFixed(0)}`}
+                value={`${getCurrencySymbol(currency)}${moneySaved.toFixed(0)}`}
                 subtitle="By using items in time"
                 icon={DollarSign}
                 gradient="from-sky-500/20 to-blue-500/20"
@@ -247,7 +253,7 @@ export default function DashboardClient({
             <motion.div layout className="space-y-2">
               <AnimatePresence mode="popLayout">
                 {displayItems.map((item, index) => (
-                  <ItemCard key={item.id} item={item} index={index} />
+                  <ItemCard key={item.id} item={item} index={index} currency={currency} />
                 ))}
               </AnimatePresence>
             </motion.div>
@@ -288,7 +294,7 @@ export default function DashboardClient({
             <motion.div layout className="space-y-2 opacity-60">
               <AnimatePresence mode="popLayout">
                 {historyItems.map((item, index) => (
-                  <ItemCard key={item.id} item={item} index={index} />
+                  <ItemCard key={item.id} item={item} index={index} currency={currency} />
                 ))}
               </AnimatePresence>
             </motion.div>

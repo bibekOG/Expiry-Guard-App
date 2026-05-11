@@ -16,6 +16,14 @@ export default async function InventoryPage() {
     .select('*')
     .order('expires_at', { ascending: true, nullsFirst: false })
 
+  // Fetch user profile for location and currency
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('location, currency')
+    .eq('id', user?.id)
+    .single()
+
   // Extract email from JWT claims
   const userEmail = (claimsData.claims as Record<string, unknown>).email as string ?? 'User'
 
@@ -23,6 +31,8 @@ export default async function InventoryPage() {
     <InventoryClient
       userEmail={userEmail}
       items={items ?? []}
+      currency={profile?.currency ?? 'USD'}
+      location={profile?.location ?? ''}
     />
   )
 }

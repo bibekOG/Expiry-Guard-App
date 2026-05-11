@@ -12,17 +12,23 @@ import {
   TrendingUp, 
   Users,
   Sun,
-  Moon
+  Moon,
+  MapPin,
+  Coins
 } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/ThemeContext'
 
+import { getCurrencySymbol } from '@/lib/constants'
+
 interface SidebarProps {
   userEmail?: string
+  userLocation?: string
+  userCurrency?: string
 }
 
-export default function Sidebar({ userEmail }: SidebarProps) {
+export default function Sidebar({ userEmail, userLocation, userCurrency }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
@@ -110,11 +116,24 @@ export default function Sidebar({ userEmail }: SidebarProps) {
         </motion.button>
 
         {userEmail && (
-          <div className="px-4 py-3 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)]">
-            <p className="text-xs text-[var(--text-faint)] uppercase tracking-wider mb-0.5">Signed in as</p>
-            <p className="text-sm font-medium text-foreground truncate" title={userEmail}>
-              {userEmail}
-            </p>
+          <div className="px-4 py-3 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] space-y-3">
+            <div>
+              <p className="text-[10px] text-[var(--text-faint)] uppercase tracking-widest font-bold mb-1 opacity-50">Profile</p>
+              <p className="text-sm font-medium text-foreground truncate" title={userEmail}>
+                {userEmail}
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-2 pt-2 border-t border-white/[0.03]">
+              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                <MapPin className="w-3.5 h-3.5 text-emerald-500/70" />
+                <span className="truncate">{userLocation || 'Location not set'}</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                <Coins className="w-3.5 h-3.5 text-amber-500/70" />
+                <span>{userCurrency || 'USD'} ({getCurrencySymbol(userCurrency)})</span>
+              </div>
+            </div>
           </div>
         )}
         <motion.button
