@@ -10,6 +10,7 @@ import {
   Flame, 
   Pill, 
   TrendingUp, 
+  History,
   Users,
   Sun,
   Moon,
