@@ -40,13 +40,10 @@ export default function Sidebar({ userEmail, userLocation, userCurrency }: Sideb
   }
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Scan Barcode', path: '/scan', icon: Scan },
-    { name: 'Smart OCR', path: '/receipt', icon: FileText },
-    { name: 'Eat This Now', path: '/recipes', icon: Flame },
-    { name: 'Medications', path: '/medications', icon: Pill },
+    { name: 'Scanner', path: '/', icon: Scan },
+    { name: 'The Fridge', path: '/inventory', icon: LayoutDashboard },
+    { name: 'The Graveyard', path: '/graveyard', icon: History },
     { name: 'Analytics', path: '/analytics', icon: TrendingUp },
-    { name: 'Households', path: '/household', icon: Users },
   ]
 
   return (

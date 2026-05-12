@@ -54,20 +54,20 @@
 ---
 
 ## 📐 Behavioral Rules
-1. **Never Auto-Delete:** Items past expiry enter a "Pending Review" state. The user must explicitly mark them as 'consumed' or 'discarded'.
-2. **Adaptive Alerts:** Highly perishable items (meat/dairy) alert 3 days prior. Stable items (canned goods) alert 14 days prior.
-3. **Medication Segregation:** Medication alerts bypass standard notification logic, requiring explicit acknowledgment, and are visually distinct.
-4. **Local-First:** All read/write operations execute against a local database first for zero-latency, syncing to the cloud asynchronously.
-5. **Positive Reinforcement:** Focus messaging on "Money/Food Saved" rather than "Waste Created" to encourage continued use.
+1. **The 30-Second Rule:** The core loop (Scan $\rightarrow$ Populate) must take less than 30 seconds.
+2. **Scanner-First:** The app must launch directly into the Scanner/Camera by default.
+3. **Never Auto-Delete:** Items past expiry enter "The Graveyard". Users must explicitly mark them as 'consumed' or 'discarded'.
+4. **Visual Urgency:** Item timers must transition from Green (Safe) $\rightarrow$ Orange (Expiring) $\rightarrow$ Flashing Red (Urgent).
+5. **Positive Reinforcement:** Focus on "Money Saved" success animations after every scan.
+6. **No Feature Creep:** No recipes, social sharing, or multi-step manual forms.
 
 ---
 
 ## 🏛️ Architectural Invariants
-1. All business logic is deterministic (no LLM guessing).
-2. Tools in `tools/` are atomic and testable.
-3. Temporary files go in `.tmp/`.
-4. Secrets/keys go in `.env` (never committed).
-5. Architecture SOPs are updated **before** code changes.
+1. **Surface Area Limit:** Maximum of 7 screens (Scanner, Fridge, Graveyard, Analytics, Settings).
+2. **Performance First:** Zero-latency local interactions (Dexie.js) before cloud sync.
+3. **Atomic Tools:** Tools in `tools/` are atomic and testable.
+4. **Secrets Management:** Secrets/keys go in `.env` (never committed).
 
 ---
 
@@ -75,7 +75,8 @@
 | Date | Change | Reason |
 |------|--------|--------|
 | 2026-05-10 | Project initialized | Protocol 0 |
-| 2026-05-11 | Synchronized constitution | Aligned 3-layer architecture with project reality (tools/architecture) |
+| 2026-05-11 | Synchronized constitution | Aligned 3-layer architecture |
+| 2026-05-12 | Lean Pivot | Refocused on 30s Core Loop and Scanner-first UI |
 
 
 # Agent Instructions

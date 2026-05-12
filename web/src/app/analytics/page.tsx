@@ -223,7 +223,7 @@ export default function AnalyticsPage() {
               </div>
             </motion.div>
 
-            {/* AI Insights */}
+            {/* Summary Stat Card */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }}
@@ -232,23 +232,13 @@ export default function AnalyticsPage() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-500">
-                  <Sparkles className="w-4 h-4" />
+                  <TrendingUp className="w-4 h-4" />
                 </div>
-                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">AI Predictive Insights</h3>
+                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Historical Performance</h3>
               </div>
-              <div className="space-y-3">
-                {data?.insights?.map((insight: string, i: number) => (
-                  <div key={i} className="flex gap-3 text-sm text-foreground/70 bg-[var(--glass-bg)] p-3 rounded-xl border border-[var(--glass-border)]">
-                    <div className="w-5 h-5 shrink-0 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[10px] text-emerald-500">
-                      {i + 1}
-                    </div>
-                    {insight}
-                  </div>
-                ))}
-                {!data?.insights && (
-                  <p className="text-sm text-[var(--text-faint)] italic text-center py-4">Add more data to unlock predictive patterns...</p>
-                )}
-              </div>
+              <p className="text-sm text-foreground/70 leading-relaxed">
+                You are currently saving <span className="text-emerald-500 font-bold">${data?.totalSavings || '0'}</span> by using items before they expire. Keep scanning your groceries to maintain accurate records!
+              </p>
             </motion.div>
           </div>
 

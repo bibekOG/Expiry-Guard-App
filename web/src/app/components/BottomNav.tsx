@@ -4,9 +4,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   Home,
-  Scan,
+  LayoutDashboard,
   TrendingUp,
-  Users,
+  History,
   Plus,
 } from 'lucide-react'
 
@@ -15,11 +15,11 @@ export default function BottomNav() {
   const router = useRouter()
 
   const tabs = [
-    { id: '/', icon: Home, label: 'Home' },
-    { id: '/scan', icon: Scan, label: 'Scan' },
+    { id: '/', icon: Home, label: 'Scanner' },
+    { id: '/inventory', icon: LayoutDashboard, label: 'Fridge' },
     { id: '/add', icon: Plus, label: 'Add', primary: true },
     { id: '/analytics', icon: TrendingUp, label: 'Stats' },
-    { id: '/household', icon: Users, label: 'Team' },
+    { id: '/graveyard', icon: History, label: 'History' },
   ]
 
   return (
